@@ -1,3 +1,7 @@
+--- Created By Jenna Carter
+--- Portfolio Project on Covid Data
+
+
 select * 
 from PortfolioSqlProject..CovidDeaths
 where continent is not null
