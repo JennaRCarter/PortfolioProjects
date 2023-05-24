@@ -1,4 +1,4 @@
-# All we now is; the date ("20180115"), City ("SQL City"), and Type ("Murder") #
+# All we know is; the date ("20180115"), City ("SQL City"), and Type ("Murder") #
 
 select * 
 from  'crime_scene_report'
