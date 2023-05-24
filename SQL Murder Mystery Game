@@ -1,0 +1,308 @@
+# All we now is; the date ("20180115"), City ("SQL City"), and Type ("Murder") #
+
+select * 
+from  'crime_scene_report'
+where date = "20180115" and city = "SQL City"  and type = "murder"
+
+-20180115	murder	Security footage shows that there were 2 witnesses. The first witness lives at the last house on "Northwestern Dr". The second witness, named Annabel, lives somewhere on "Franklin Ave".	SQL City
+
+# to get the name of the person who lives on Northwesten Dr (ASC because it says its at the last house on the street) #
+
+select * 
+from person 
+where address_street_name = "Northwestern Dr" order by address_number ASC
+
+-id	name	license_id	address_number	address_street_name	ssn
+14887	Morty Schapiro	118009	4919	Northwestern Dr	111564949
+
+
+# Using the license_id from table above to pull more info from the drivers_license table #
+
+ select * 
+from drivers_license
+where id = 118009
+
+-id	age	height	eye_color	hair_color	gender	plate_number	car_make	car_model
+118009	64	84	blue	white	male	00NU00	Mercedes-Benz	E-Class
+
+
+# Using the id from the persons table to pull up the info in the get_fit_now_member table #
+
+select * 
+from get_fit_now_member
+where  person_id = 118009
+              
+-No Return (He does not have a membership here)
+
+# to get more info on Annabel #
+
+select * 
+from person 
+where address_street_name = "Franklin Ave" and name = "Annabel" 
+
+-id	name	license_id	address_number	address_street_name	ssn
+16371	Annabel Miller	490173	103	Franklin Ave	318771143
+
+# Using the license_id from table above to pull more info from the drivers_license table #
+
+select * 
+from drivers_license
+where id = 490173 
+
+-id	age	height	eye_color	hair_color	gender	plate_number	car_make	car_model
+490173	35	65	green	brown	female	23AM98	Toyota	Yaris
+ 
+# Using the id from the persons table to pull up the info in the get_fit_now_member table #
+
+select * 
+from get_fit_now_member
+where  person_id = 16371 
+
+-id	person_id	name	membership_start_date	membership_status
+90081	16371	Annabel Miller	20160208	gold
+
+
+# Using the person_id to pull up the facebook_event_checkin table #
+
+Annabel
+
+select * 
+from facebook_event_checkin
+where  person_id = 16371
+
+-person_id	event_id	event_name	date
+16371	4719	The Funky Grooves Tour	20180115
+
+
+Morty
+
+select * 
+from facebook_event_checkin
+where  person_id = 14887
+
+-person_id	event_id	event_name	date
+14887	4719	The Funky Grooves Tour	20180115
+
+(this table above shows they were at the same place on the same day) 
+
+
+
+# Using the membership_id from the get_fit_now_member table to pull up the get_fit_now_check_in table
+
+
+select * 
+from get_fit_now_check_in
+where  membership_id = 90081
+              
+-membership_id	check_in_date	check_in_time	check_out_time
+90081	20180109	1600	1700
+
+# pulling up the interview table #
+
+Morty 
+
+select * 
+from interview
+where  person_id = 14887
+
+-person_id	transcript
+14887	I heard a gunshot and then saw a man run out. He had a "Get Fit Now Gym" bag. The membership number on the bag started with "48Z". Only gold members have those bags. The man got into a car with a plate that included "H42W".
+
+
+Annabel
+
+select * 
+from interview
+where  person_id = 16371
+
+-16371	I saw the murder happen, and I recognized the killer from my gym when I was working out last week on January the 9th.
+
+# going back to the get_fit_now_member table and using info we gathered above #
+
+select * 
+from get_fit_now_member
+where membership_status = "gold" and id like "48z%"
+
+id	person_id	name	membership_start_date	membership_status
+48Z7A	28819	Joe Germuska	20160305	gold
+48Z55	67318	Jeremy Bowers	20160101	gold
+
+# pulling up the drivers_license table to use the plate clues from above #
+
+select * 
+from drivers_license
+where plate_number like "%H42W%"
+
+id	age	height	eye_color	hair_color	gender	plate_number	car_make	car_model
+183779	21	65	blue	blonde	female	H42W0X	Toyota	Prius
+423327	30	70	brown	brown	male	0H42W2	Chevrolet	Spark LS
+664760	21	71	black	black	male	4H42WR	Nissan	Altima
+
+
+# Using id from table above to pull up their info on the persons table #
+
+select *
+from person 
+where license_id = 183779
+
+-id	name	license_id	address_number	address_street_name	ssn
+78193	Maxine Whitely	183779	110	Fisk Rd	137882671
+
+
+select *
+from person 
+where license_id = 423327
+
+-id	name	license_id	address_number	address_street_name	ssn
+67318	Jeremy Bowers	423327	530	Washington Pl, Apt 3A	871539279
+
+
+select *
+from person 
+where license_id = 664760
+
+-id	name	license_id	address_number	address_street_name	ssn
+51739	Tushar Chandra	664760	312	Phi St	137882671
+
+
+# checking the get_fit_now_member table to see who is a member and if they are a gold memeber and using the license_id from table above
+
+select *
+from get_fit_now_member
+where person_id = 67318
+
+-id	person_id	name	membership_start_date	membership_status
+48Z55	67318	Jeremy Bowers	20160101	gold
+
+
+select *
+from get_fit_now_member
+where person_id = 78193
+
+- Not a member
+
+select *
+from get_fit_now_member
+where person_id = 51739
+
+- not a member
+
+# using the license_id to pull up the interview table.
+
+select *
+from interview
+where person_id = 67318
+
+-person_id	transcript
+67318	I was hired by a woman with a lot of money. I don't know her name but I know she's around 5'5" (65") or 5'7" (67"). She has red hair and she drives a Tesla Model S. I know that she attended the SQL Symphony Concert 3 times in December 2017.
+
+
+# searching from the clues given from the table above she drove a Model S, had red hair, and is female. 
+
+select *
+from drivers_license
+where car_model = "Model S" and gender = "female" and hair_color = "red"
+
+-id	age	height	eye_color	hair_color	gender	plate_number	car_make	car_model
+202298	68	66	green	red	female	500123	Tesla	Model S
+291182	65	66	blue	red	female	08CM64	Tesla	Model S
+918773	48	65	black	red	female	917UU3	Tesla	Model S
+
+
+# the clues given also stated she attended the SQL Symphony december 2017. This really didnt get me more clues but kept it in here.
+
+select *
+from facebook_event_checkin
+where event_name = "SQL Symphony Concert" and date like ("%201712%")
+
+
+person_id	event_id	event_name	date
+62596	1143	SQL Symphony Concert	20171225
+19260	1143	SQL Symphony Concert	20171214
+58898	1143	SQL Symphony Concert	20171220
+69699	1143	SQL Symphony Concert	20171214
+19292	1143	SQL Symphony Concert	20171213
+43366	1143	SQL Symphony Concert	20171207
+92343	1143	SQL Symphony Concert	20171212
+28582	1143	SQL Symphony Concert	20171220
+28582	1143	SQL Symphony Concert	20171215
+81526	1143	SQL Symphony Concert	20171202
+24397	1143	SQL Symphony Concert	20171208
+11173	1143	SQL Symphony Concert	20171223
+79312	1143	SQL Symphony Concert	20171203
+69325	1143	SQL Symphony Concert	20171206
+24556	1143	SQL Symphony Concert	20171207
+24556	1143	SQL Symphony Concert	20171221
+24556	1143	SQL Symphony Concert	20171224
+99716	1143	SQL Symphony Concert	20171206
+99716	1143	SQL Symphony Concert	20171212
+99716	1143	SQL Symphony Concert	20171229
+67318	1143	SQL Symphony Concert	20171206
+
+
+
+# Now pulling up the license_id table using the info we gathered from the car_model table for all three individuals.
+
+
+select *
+from person
+where license_id = 918773
+
+
+-id	name	license_id	address_number	address_street_name	ssn
+78881	Red Korb	918773	107	Camerata Dr	961388910
+
+
+
+select *
+from person
+where license_id = 291182
+
+-id	name	license_id	address_number	address_street_name	ssn
+90700	Regina George	291182	332	Maple Ave	337169072
+
+
+select *
+from person
+where license_id = 202298
+
+-id	name	license_id	address_number	address_street_name	ssn
+99716	Miranda Priestly	202298	1883	Golden Ave	987756388
+
+
+# Now lets check their income using their ssn we pulled up from the license_id table above
+
+
+select * 
+from income
+where ssn = 961388910
+
+ssn	annual_income
+961388910	278000
+
+
+select * 
+from income
+where ssn = 987756388
+
+-ssn	annual_income
+987756388	310000
+
+select * 
+from income
+where ssn = 337169072
+
+- nothing returned
+
+
+# so it looks like were down to 2 people, Miranda Priestly and Red Korb 
+
+we know that the suspect was a female so...
+
+INSERT INTO solution VALUES (1, 'Miranda Priestly');
+        
+        SELECT value FROM solution;
+
+
+-value
+Congrats, you found the brains behind the murder! Everyone in SQL City hails you as the greatest SQL detective of all time. Time to break out the champagne!
